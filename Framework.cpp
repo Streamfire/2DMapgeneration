@@ -1,9 +1,7 @@
 #include "Framework.hpp"
 
 void CFramework::Init(const char *Title, int x, int y, int h, int w, bool fullscreen)
-{
-	printf("Starte Framework::Init\n");
-
+{	
 	SDL_ShowCursor(0);
 	window = NULL;
 
@@ -13,7 +11,7 @@ void CFramework::Init(const char *Title, int x, int y, int h, int w, bool fullsc
 		printf("Fehler beim initialisieren der SDL\n");
 		printf(SDL_GetError());
 	}
-
+	//SDL Image initialisieren
 	if (IMG_Init(IMG_INIT_JPG || IMG_INIT_PNG || IMG_INIT_TIF || IMG_INIT_WEBP ) < 0)
 	{
 		printf("Fehler beim initialisieren der SDL_image\n");
@@ -38,7 +36,7 @@ void CFramework::Init(const char *Title, int x, int y, int h, int w, bool fullsc
 		printf(SDL_GetError());
 	}
 
-	//RenderContext für das Window erstellen
+	//RenderContext fÃ¼r das Window erstellen
 	Screen = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	if (Screen == NULL)
 	{
@@ -48,13 +46,13 @@ void CFramework::Init(const char *Title, int x, int y, int h, int w, bool fullsc
 
 
 	
-	//Sprite für den Background laden
+	//Sprite fÃ¼r den Background laden
 	SDL_Surface* s_Temp;
 	s_Temp = SDL_LoadBMP(P_FRAMEBACKGROUND);
 	if (s_Temp == NULL)
 	{
 		std::cout << SDL_GetError() << std::endl;
-		printf("Fehler beim erstellen der Surface für den Framebackground\n");
+		printf("Fehler beim erstellen der Surface fÃ¼r den Framebackground\n");
 	}
 
 	//aus der Surface eine textur erstellen
@@ -62,7 +60,7 @@ void CFramework::Init(const char *Title, int x, int y, int h, int w, bool fullsc
 	if (t_Background == NULL)
 	{
 		std::cout << SDL_GetError() << std::endl;
-		printf("Fehler beim erstellen der Textur fürs Backgroundimage\n");
+		printf("Fehler beim erstellen der Textur fÃ¼rs Backgroundimage\n");
 	}
 
 
@@ -104,7 +102,7 @@ void CFramework::Update()
 	
 	g_pTimer->Update();
 }
-
+//Cleanup
 void CFramework::Quit()
 {
 	printf("Starte Framework::Quit\n");
@@ -114,8 +112,10 @@ void CFramework::Quit()
 	SDL_Quit();
 	
 }
+//Frameworkfunktionen
+//mÃ¶glicherweise mal in eine enigne Klasse auslagern
 
-//Prüfen ob [Taste] gedrückt ist
+//PrÃ¼fen ob [Taste] gedrÃ¼ckt ist
 bool  CFramework::KeyState(int KeyID)
 {
 
@@ -131,7 +131,7 @@ bool CFramework::LMouseState(SDL_Rect Rect)
 {
 
 	if (
-		Rect.y	< (mouse_y) &&//obere Kante Rect über unterer Kante B
+		Rect.y	< (mouse_y) &&//obere Kante Rect Ã¼ber unterer Kante B
 		(Rect.y + Rect.h) >	mouse_y		&&//untere Kante Rect unter der oberen Kante B
 		Rect.x	< (mouse_x) &&//linke Seite Rect links der rechten Seite B
 		(Rect.x + Rect.w) >	mouse_x)	  //rechte Kante A rechts der linken Kante B
@@ -163,7 +163,7 @@ bool CFramework::LMouseState()
 bool CFramework::Mouseover(SDL_Rect Rect)
 {
 	if (
-		Rect.y	< (mouse_y) &&//obere Kante Rect über unterer Kante B
+		Rect.y	< (mouse_y) &&//obere Kante Rect Ã¼ber unterer Kante B
 		(Rect.y + Rect.h) >	mouse_y		&&//untere Kante Rect unter der oberen Kante B
 		Rect.x < (mouse_x) &&//linke Seite Rect links der rechten Seite B
 		(Rect.x + Rect.w) > mouse_x)	  //rechte Kante A rechts der linken Kante B
@@ -182,7 +182,7 @@ bool CFramework::MMouseState(SDL_Rect Rect)
 {
 
 	if (
-		Rect.y	< (mouse_y) &&//obere Kante Rect über unterer Kante B
+		Rect.y	< (mouse_y) &&//obere Kante Rect Ã¼ber unterer Kante B
 		(Rect.y + Rect.h) >	mouse_y		&&//untere Kante Rect unter der oberen Kante B
 		Rect.x	< (mouse_x) &&//linke Seite Rect links der rechten Seite B
 		(Rect.x + Rect.w) >	mouse_x)	  //rechte Kante A rechts der linken Kante B
@@ -215,7 +215,7 @@ bool CFramework::RMouseState(SDL_Rect Rect)
 {
 
 	if (
-		Rect.y	< (mouse_y) &&//obere Kante Rect über unterer Kante B
+		Rect.y	< (mouse_y) &&//obere Kante Rect Ã¼ber unterer Kante B
 		(Rect.y + Rect.h) >	mouse_y		&&//untere Kante Rect unter der oberen Kante B
 		Rect.x	< (mouse_x) &&//linke Seite Rect links der rechten Seite B
 		(Rect.x + Rect.w) >	mouse_x)	  //rechte Kante A rechts der linken Kante B
@@ -253,19 +253,19 @@ int CFramework::MWheel()
 	
 }
 
-
-int CFramework::getRand(int a, int b)
+//liefert einen zufÃ¤lligen int Wert zwischen min und max(eingeschlossen min und max)
+int CFramework::getRand(int min, int max)
 {
-	return (rand() % (b-a+1) + (a));
+	return (rand() % (max-min+1) + (min));
 
 }
 
-//gibt true zurück wenn die zwei übergebenen Rects sich überlappen
+//gibt true zurÃ¼ck wenn die zwei Ã¼bergebenen Rects sich Ã¼berlappen
 bool CFramework::CheckCollision(SDL_Rect A, SDL_Rect B)
 {
 
 	if (
-		A.y	< (B.y + B.h) &&//obere Kante A über unterer Kante B
+		A.y	< (B.y + B.h) &&//obere Kante A Ã¼ber unterer Kante B
 		(A.y + A.h) >	B.y		&&//untere Kante A unter der oberen Kante B
 		A.x	< (B.x + B.w) &&//linke Seite A links der rechten Seite B
 		(A.x + A.w) >	B.x)	  //rechte Kante A rechts der linken Kante B
